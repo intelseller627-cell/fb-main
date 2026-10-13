@@ -1,0 +1,14 @@
+{
+  "name": "fb-main",
+  "version": "1.0.0",
+  "description": "Facebook executor service for Intelseller Ad Hub (server-to-server, wa-main style)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "fca-unofficial-updated": "file:./vendor/fca-unofficial-updated"
+  }
+}
