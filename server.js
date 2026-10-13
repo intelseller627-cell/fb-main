@@ -37,10 +37,12 @@ app.get("/api/accounts/:id", h(async (r) => mgr.getAccount(r.params.id)));
 app.delete("/api/accounts/:id", h(async (r) => { mgr.removeAccount(r.params.id); return { ok: true }; }));
 app.post("/api/accounts/:id/enabled", h(async (r) => mgr.setEnabled(r.params.id, !!r.body.enabled)));
 app.post("/api/accounts/:id/reconnect", h(async (r) => mgr.reconnect(r.params.id, r.body.appState || r.body.cookie)));
-app.get("/api/accounts/:id/threads", h(async (r) => ({ threads: await mgr.listThreads(r.params.id, { kind: r.query.kind, limit: r.query.limit, minAgeHours: Number(r.query.minAgeHours) || 0 }) })));
+app.get("/api/accounts/:id/threads", h(async (r) => ({ threads: await mgr.listThreads(r.params.id, { kind: r.query.kind, limit: r.query.limit, minAgeHours: Number(r.query.minAgeHours) || 0, pages: r.query.pages, want: r.query.want, cooldownMs: r.query.cooldownMs }) })));
 app.post("/api/accounts/:id/send", h(async (r) => mgr.sendDm(r.params.id, r.body)));
 app.post("/api/accounts/:id/publish", h(async (r) => mgr.publish(r.params.id, r.body)));
 app.post("/api/accounts/:id/optout", h(async (r) => { mgr.optOut(r.params.id, r.body.threadId, r.body.optedOut !== false); return { ok: true }; }));
+
+app.use((err, req, res, next) => { console.error("[fb-main] unhandled error on", req.method, req.path, "-", err?.stack || err); res.status(500).json({ error: "Server error" }); });
 
 const port = process.env.PORT || 3000;
 initStore()
