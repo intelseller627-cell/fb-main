@@ -32,7 +32,7 @@ Facebook has no official API for this on personal accounts. In a desktop browser
 - **AppState/cookie login only.** The vendored fca originally POSTed email/password to a third-party server (`minhdong.site`) and wrote plaintext cookies to `Fca_Database/database.sqlite`. Both are removed in this copy. Never put email/password login back.
 - Sessions are stored **AES-256-GCM encrypted** (`FB_ENC_KEY`), file mode 0600.
 - API requires `x-api-key` (constant-time compare). Service refuses to start without a strong key.
-- DMs are **only** sent to threads where the other person has already messaged the account (checked on every send). Anyone who replies `STOP` is blocked forever. Per-thread cooldown (24h), hourly/daily DM caps, daily publish cap, randomized 25–70s gaps, one send at a time per account.
+- DMs are **only** sent to threads where the other person has already messaged the account (checked on every send). Anyone who replies `STOP` is blocked forever. Per-thread cooldown (24h), hourly/daily DM caps, daily publish cap, one send at a time per account. The wait between DMs is set by Intelseller per promoter (`gapMs`, clamped to `FB_DM_GAP_FLOOR_MS`–`FB_DM_GAP_CEIL_MS`, default 10s–5min); if a request sends no `gapMs`, the old random 25–70s gap is used.
 - Each account has a master ON/OFF switch (`POST /api/accounts/:id/enabled`).
 
 ## API (all need `x-api-key`)
@@ -40,3 +40,6 @@ Facebook has no official API for this on personal accounts. In a desktop browser
 
 ## Honest limits
 Automating personal Facebook accounts breaks Facebook's terms; accounts can get checkpointed or banned (that is why the limits above exist). Sessions expire; users must re-paste fresh cookies when status shows **Signed out**. Tested here with a stubbed Facebook login only — please test with a throwaway account first.
+
+## Higher volume (Intelseller "daily drip")
+`POST /api/accounts/:id/send` accepts `caps: {perHour, perDay}`, clamped to `FB_DM_PER_HOUR_MAX` (150) / `FB_DM_PER_DAY_MAX` (1500); without it the normal `FB_DM_PER_HOUR` / `FB_DM_PER_DAY` apply. `GET .../threads` accepts `pages` (1–10 older pages per folder), `want` (max rows, ≤1500) and `cooldownMs` (drop opted-out people and anyone messaged inside that window) so Intelseller can find enough people.
