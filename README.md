@@ -55,3 +55,6 @@ Facebook returns small pages from `getThreadList`, so a short page does not mean
 
 ## Diagnostic
 `GET /api/accounts/:id/diag` runs the thread-list query once per folder (plus a second page) and returns, per page: number of chats, one-to-one vs group, newest/oldest timestamps and any extra fields Facebook includes (`count`, `page_info`, ...). Use it to see what Facebook itself returns when the scan finds fewer chats than expected.
+
+## Friends list
+`GET /api/accounts/:id/friends[?refresh=1&cooldownMs=&listLimit=]` returns friend totals (ready / recently messaged / opted out), how many contacts Facebook sent that are not friends, and the first `listLimit` friends A–Z. `GET /api/accounts/:id/friends/pool?cooldownMs=&want=` returns eligible friends (`userId`, `name`), shuffled. The list comes from the library's `getFriendsList` (`/chat/user_info_all`), cached for 10 minutes. A friend's user id is the thread id for sending.
