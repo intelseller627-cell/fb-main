@@ -43,3 +43,9 @@ Automating personal Facebook accounts breaks Facebook's terms; accounts can get 
 
 ## Higher volume (Intelseller "daily drip")
 `POST /api/accounts/:id/send` accepts `caps: {perHour, perDay}`, clamped to `FB_DM_PER_HOUR_MAX` (150) / `FB_DM_PER_DAY_MAX` (1500); without it the normal `FB_DM_PER_HOUR` / `FB_DM_PER_DAY` apply. `GET .../threads` accepts `pages` (1–10 older pages per folder), `want` (max rows, ≤1500) and `cooldownMs` (drop opted-out people and anyone messaged inside that window) so Intelseller can find enough people.
+
+## Messaging people who never wrote first
+`requireInbound: false` on `POST .../send` skips the "they messaged this account first" check (Intelseller's "DM everyone in your chats" surface uses it). STOP opt-outs, the per-thread cooldown, rate caps and spacing still apply.
+
+## Archived chats, message requests and the full scan
+`GET .../threads` now also reads the ARCHIVED folder (alongside INBOX, PENDING, OTHER) and may page up to 60 pages per folder. `POST .../send` accepts `acceptRequest: true` to accept a message request (PENDING / OTHER) before sending. `POST .../scan` starts a background count of every one-to-one chat (up to `FB_SCAN_MAX_THREADS`, default 20000); `GET .../scan?cooldownMs=&listLimit=` returns progress, totals, a per-folder breakdown and the newest people.
