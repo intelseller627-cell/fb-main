@@ -49,3 +49,6 @@ Automating personal Facebook accounts breaks Facebook's terms; accounts can get 
 
 ## Archived chats, message requests and the full scan
 `GET .../threads` now also reads the ARCHIVED folder (alongside INBOX, PENDING, OTHER) and may page up to 60 pages per folder. `POST .../send` accepts `acceptRequest: true` to accept a message request (PENDING / OTHER) before sending. `POST .../scan` starts a background count of every one-to-one chat (up to `FB_SCAN_MAX_THREADS`, default 20000); `GET .../scan?cooldownMs=&listLimit=` returns progress, totals, a per-folder breakdown and the newest people.
+
+## Paging note
+Facebook returns small pages from `getThreadList`, so a short page does not mean "no more chats". `listThreads` and the scan keep paging until a page is empty (or nothing new for 2–3 pages). `POST .../scan/cancel` stops a running scan; the status adds `pages`, `oldestAt`, `doneFolders`, `cancelled` and `warning`. Default `FB_SCAN_MAX_PAGES` is now 1500.
