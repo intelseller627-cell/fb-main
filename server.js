@@ -41,6 +41,7 @@ app.get("/api/accounts/:id/threads", h(async (r) => ({ threads: await mgr.listTh
 app.post("/api/accounts/:id/scan", h(async (r) => mgr.startScan(r.params.id)));
 app.get("/api/accounts/:id/scan", h(async (r) => mgr.scanSummary(r.params.id, { cooldownMs: Number(r.query.cooldownMs) || 0, listLimit: Math.min(Number(r.query.listLimit) || 300, 500) })));
 app.post("/api/accounts/:id/scan/cancel", h(async (r) => mgr.cancelScan(r.params.id)));
+app.get("/api/accounts/:id/diag", h(async (r) => mgr.diagThreads(r.params.id)));
 app.post("/api/accounts/:id/send", h(async (r) => mgr.sendDm(r.params.id, r.body)));
 app.post("/api/accounts/:id/publish", h(async (r) => mgr.publish(r.params.id, r.body)));
 app.post("/api/accounts/:id/optout", h(async (r) => { mgr.optOut(r.params.id, r.body.threadId, r.body.optedOut !== false); return { ok: true }; }));

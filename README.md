@@ -52,3 +52,6 @@ Automating personal Facebook accounts breaks Facebook's terms; accounts can get 
 
 ## Paging note
 Facebook returns small pages from `getThreadList`, so a short page does not mean "no more chats". `listThreads` and the scan keep paging until a page is empty (or nothing new for 2–3 pages). `POST .../scan/cancel` stops a running scan; the status adds `pages`, `oldestAt`, `doneFolders`, `cancelled` and `warning`. Default `FB_SCAN_MAX_PAGES` is now 1500.
+
+## Diagnostic
+`GET /api/accounts/:id/diag` runs the thread-list query once per folder (plus a second page) and returns, per page: number of chats, one-to-one vs group, newest/oldest timestamps and any extra fields Facebook includes (`count`, `page_info`, ...). Use it to see what Facebook itself returns when the scan finds fewer chats than expected.
